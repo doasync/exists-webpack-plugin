@@ -5,7 +5,7 @@ const chalk = require('chalk');
 const PLUGIN_NAME = 'ExistsWebpackPlugin';
 const ERROR_OPTION_PATH = `${PLUGIN_NAME}: specify either "path" or "outputPath" option\n`;
 const ERROR_PATH_EXISTS = `${PLUGIN_NAME}: path exists\n%s\n`;
-const ERROR_PATH_NOT_EXISTS = `${PLUGIN_NAME}: path not exists\n%s\n`;
+const ERROR_PATH_NOT_EXISTS = `${PLUGIN_NAME}: path do not exist\n%s\n`;
 
 const defaultOptions = {
   path: undefined,
