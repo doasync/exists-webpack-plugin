@@ -1,4 +1,4 @@
-![exists-webpack-plugin logo](https://i.imgur.com/CH8iInH.png)
+![exists-webpack-plugin logo](https://i.imgur.com/EfWTYNQ.png)
 
 [![NPM Version][npm-image]][npm-url] ![NPM Downloads][downloads-image] [![GitHub issues][issues-image]][issues-url] [![Telegram][telegram-image]][telegram-url]
 
@@ -16,7 +16,17 @@
 Exists Webpack Plugin
 ===================
 
-This plugin emits an error (or warning) or fails the build if `output.path` or custom path (folder or file) exists (or not exists).
+This plugin returns an error (or warning) if specified paths exist (or not exist).
+Webpack skips the emitting phase whenever there is an error from this plugin.
+This helps to force the developer to change dist folder and do not overwrite files.
+The plugin supports the following modes:
+
+1. Check any custom files or folders if they are exist
+2. Check if output folder exists (to stop Webpack early)
+3. Check if any emitted assets already exist (to prevent overwriting them)
+4. Check files of entry points only (to prevent running the same config twice, but ignore other assets)
+5. Do the same above checks but if files don't exist
+6. Show just warnings instead of errors and let Webpack finish the build
 
 ----------
 
@@ -44,9 +54,7 @@ module.exports = {
 }
 ```
 
-The example above emits an error if `output.path` from Webpack configuration already exists.
-You can also add `failOnError: true` option to fail early and stop Webpack. This helps to force developer
-to change dist folder somehow and do not overwrite files.
+The example above emits an error and stops Webpack if `output.path` from your configuration already exists.
 
 Options
 -------------------
@@ -54,25 +62,29 @@ Options
 #### Default options
 ```js
 {
-  path: undefined,
-  outputPath: false,
+  paths: undefined,
+  mode: undefined,
   onExists: true,
   emitWarning: false,
-  failOnError: false,
-}
+};
 ```
 
-#### `path` (string: `undefined`)
+#### `paths` (array: `undefined`)
 
-You can specify a custom path to a folder or file that you want to check
-if it exists or not. Webpack's `fs.statSync` is used,
-so you can use paths relative to your current directory (the check is done
-in `beforeRun` hook). You should specify either
-this option or `outputPath`.
+An array of paths that you want to check for existence.
+You can use paths relative to your current directory.
+You should specify either `paths` or `mode`.
 
-#### `outputPath` (boolean: `false`)
+#### `mode` (string: `output.path` | `assets` | `entries`)
 
-If you want to check for `output.path` (from Webpack config) set it to `true`.
+###### `output.path`
+Check for `output.path` (from Webpack config)
+
+###### `assets`
+Check generated assets
+
+###### `entries`
+Check entry points only
 
 #### `onExists` (boolean: `true`)
 
@@ -80,18 +92,5 @@ A boolean value to specify when to emit an error. If you want it when your path 
 
 #### `emitWarning` (boolean: `false`)
 
-By default this plugin will emit an error if the path exists. You can emit a warning instead if you set this option to `true`.
-
-#### `failOnError` (boolean: `false`)
-
-With this option set to `true` the plugin will cause the build process to fail if there is an error or warning.
-
-## Gotchas
-
-### noEmitOnErrors
-
-Webpack configuration option `optimization.noEmitOnErrors` prevents webpack
-from outputting anything into a bundle. Webpack skips the emitting
-phase whenever there are errors while compiling. This ensures that
-no erroring assets are emitted. You can alternatively use `failOnError` option
-of this plugin to prevent creating any files.
+By default this plugin will emit an error if the path exists (or not). You can emit a warning instead by setting this option to `true`.
+The build process will not fail in this case and your assets will be overwritten.
