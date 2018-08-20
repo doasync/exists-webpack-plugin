@@ -1,6 +1,6 @@
 {
   "name": "exists-webpack-plugin",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Emits an error if output.path or custom path exists (or not exists)",
   "engines": {
     "node": ">= 10.8.0",
