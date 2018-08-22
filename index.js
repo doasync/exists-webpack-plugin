@@ -148,11 +148,13 @@ class ExistsWebpackPlugin {
       this.detectError();
 
       // Emit warning or fail
-      if (emitWarning) {
-        compilation.warnings.push(this.error);
-      } else {
-        compilation.errors.push(this.error);
-        return false;
+      if (this.error) {
+        if (emitWarning) {
+          compilation.warnings.push(this.error);
+        } else {
+          compilation.errors.push(this.error);
+          return false;
+        }
       }
 
       // Everything is ok
